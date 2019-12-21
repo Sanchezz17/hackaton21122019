@@ -117,7 +117,7 @@ const students = [
 
 ];
 
-app.get("/:teacherLogin/:lessonName/:fullName", (req, res) => {
+app.get("/:teacherLogin/:lessonName?:fullName", (req, res) => {
     const teacherLogin = req.params.teacherLogin;
     const lessonName = req.params.lessonName;
     const fullName = req.params.fullName;
@@ -168,7 +168,7 @@ app.post("/userAuth?:link", upload.none(), (req, res) => {
             hash,
             {maxAge: 9000000, httpOnly: true});
     }
-    res.redirect(link + `/${fullName}`)
+    res.redirect(link + `?${fullName}`)
 });
 
 app.listen(port, () => console.log(`App listening on port ${port}`));
