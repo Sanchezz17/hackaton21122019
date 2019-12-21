@@ -90,7 +90,6 @@ app.post("/createLesson", upload.none(), (req, res) => {
 });
 
 app.get("/userAuth/:teacherName/:lessonName", (req, res) => {
-    const link = req.params.link;
     res.render("html/userAuth.hbs", {
         layout: "default"
     });
@@ -99,8 +98,8 @@ app.get("/userAuth/:teacherName/:lessonName", (req, res) => {
 const users = {};
 
 app.post("/userAuth/:teacherName/:lessonName", upload.none(), (req, res) => {
-    const lessonName = req.params.lessonName;
-    const teacherName = req.params.teacherName;
+    const lessonName = decodeURI(req.params.lessonName);
+    const teacherName = decodeURI(req.params.teacherName);
     const result = req.body;
     const name = result["name"];
     const surname = result["surname"];
@@ -125,8 +124,8 @@ app.post("/userAuth/:teacherName/:lessonName", upload.none(), (req, res) => {
 });
 
 app.get("/auth/:teacherName/:lessonName", (req, res) => {
-    const teacherName = req.params.teacherName;
-    const lessonName = req.params.lessonName;
+    const teacherName = decodeURI(req.params.teacherName);
+    const lessonName = decodeURI(req.params.lessonName);
     const link = teachers[teacherName].lessons[lessonName].link;
     if (teacherIsAuthorized(req)) {
         res.render("html/studentsResults.hbs", {
@@ -141,10 +140,10 @@ app.get("/auth/:teacherName/:lessonName", (req, res) => {
     }
 });
 
-app.get("/:teacherLogin/:lessonName/:fullName", (req, res) => {
-    const teacherName = req.params.teacherLogin;
-    const lessonName = req.params.lessonName;
-    const fullName = req.params.fullName;
+app.get("/:teacherName/:lessonName/:fullName", (req, res) => {
+    const teacherName = decodeURI(req.params.teacherName);
+    const lessonName = decodeURI(req.params.lessonName);
+    const fullName = decodeURI(req.params.fullName);
     res.render("html/student.hbs", {
         layout: "default",
         fullName,
@@ -154,25 +153,25 @@ app.get("/:teacherLogin/:lessonName/:fullName", (req, res) => {
 });
 
 app.get("/api/answer/:teacherName/:lessonName/:fullName", (req, res) => {
-    const teacherName = req.params.teacherName;
-    const lessonName = req.params.lessonName;
-    const fullName = req.params.fullName;
+    const teacherName = decodeURI(req.params.teacherName);
+    const lessonName = decodeURI(req.params.lessonName);
+    const fullName = decodeURI(req.params.fullName);
     teachers[teacherName].lessons[lessonName].students.find(s => s.name === fullName).answer = true;
     res.redirect(req.get('referer'));
 });
 
 app.get("/api/question/:teacherName/:lessonName/:fullName", (req, res) => {
-    const teacherName = req.params.teacherName;
-    const lessonName = req.params.lessonName;
-    const fullName = req.params.fullName;
+    const teacherName = decodeURI(req.params.teacherName);
+    const lessonName = decodeURI(req.params.lessonName);
+    const fullName = decodeURI(req.params.fullName);
     teachers[teacherName].lessons[lessonName].students.find(s => s.name === fullName).question = true;
     res.redirect(req.get('referer'));
 });
 
 app.get("/api/add/:teacherName/:lessonName/:fullName", (req, res) => {
-    const teacherName = req.params.teacherName;
-    const lessonName = req.params.lessonName;
-    const fullName = req.params.fullName;
+    const teacherName = decodeURI(req.params.teacherName);
+    const lessonName = decodeURI(req.params.lessonName);
+    const fullName = decodeURI(req.params.fullName);
     teachers[teacherName].lessons[lessonName].students.find(s => s.name === fullName).points++;
     res.redirect(req.get('referer'));
 });
