@@ -52,7 +52,7 @@ app.post("/", upload.none(), (req, res) => {
     const result = req.body;
     const login = result["login"];
     const password = result["password"];
-    const hash = crypto.createHash('md5').update(login+password).digest("hex")
+    const hash = crypto.createHash('md5').update(login+password).digest("hex");
     if (!Object.keys(teachers).includes(login)) {
         teachers[login] = {
             password,
@@ -120,16 +120,54 @@ const students = [
 app.get("/:teacherLogin/:lessonName", (req, res) => {
     const teacherLogin = req.params.teacherLogin;
     const lessonName = req.params.lessonName;
+    const link = teachers[teacherLogin].lessons[lessonName].link;
     if (teacherIsAuthorized(req)) {
         res.render("html/studentsResults.hbs", {
             layout: "default",
             students: teachers[teacherLogin].lessons[lessonName].students,
-            link: teachers[teacherLogin].lessons[lessonName].link,
-            lessonName: lessonName
+            link,
+            lessonName
         });
     } else {
-
+        res.redirect(`/userAuth?${link}`);
     }
+});
+
+app.get("/userAuth?:link", (req, res) => {
+    const link = req.params.link;
+    res.render("html/userAuth.hbs", {
+        layout: "default"
+    });
+});
+
+const users = {};
+
+app.post("/userAuth?:link", upload.none(), (req, res) => {
+    const result = req.body;
+    const name = result["name"];
+    const surname = result["surname"];
+    const fullName = name + " " + surname;
+    const hash = crypto.createHash('md5').update(fullName).digest("hex");
+    if (!Object.keys(users).includes(fullName)) {
+        users[fullName] = {
+            hash
+        };
+        res.cookie(
+            "user",
+            hash,
+            {maxAge: 9000000, httpOnly: true});
+    }
+    res.redirect(link + `/${fullName}`)
+});
+
+app.get("/:teacherLogin/:lessonName/:fullName", (req, res) => {
+    const teacherLogin = req.params.teacherLogin;
+    const lessonName = req.params.lessonName;
+    const fullName = req.params.fullName;
+    res.render("html/student.hbs", {
+        layout: "default",
+        fullName
+    });
 });
 
 app.listen(port, () => console.log(`App listening on port ${port}`));
