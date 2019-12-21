@@ -116,3 +116,8 @@ table.minimalistBlack tfoot td {
     0%   { transform: scale(30); }
     100% { transform: scale(1); }
 }
+
+.saveButton{
+    background: dodgerblue;
+    box-shadow: 0 10px 20px -8px deepskyblue;
+}

@@ -125,7 +125,7 @@ app.get("/:teacherLogin/:lessonName", (req, res) => {
             layout: "default",
             students: teachers[teacherLogin].lessons[lessonName].students,
             link: teachers[teacherLogin].lessons[lessonName].link,
-            lessonName
+            lessonName: lessonName
         });
     } else {
 
