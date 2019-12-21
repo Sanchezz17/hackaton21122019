@@ -32,11 +32,9 @@ app.engine(
 const users = {};
 
 app.get("/", (req, res) => {
-    if (req.cookies.user) {
-        if (Object.entries(users).length !== 0) {
-            res.redirect("/createLesson");
-            return;
-        }
+    if (userIsAuthorized(req)) {
+        res.redirect("/createLesson");
+        return;
     }
     res.render("html/index.hbs", {
         layout: "default"
@@ -47,33 +45,36 @@ app.post("/", upload.none(), (req, res) => {
     const result = req.body;
     const login = result["login"];
     const password = result["password"];
+    const hash = crypto.createHash('md5').update(login+password).digest("hex")
     if (!Object.keys(users).includes(login)) {
-        users[login] = password;
+        users[login] = {
+            password,
+            hash
+        };
+        res.cookie(
+            "user",
+            hash,
+            {maxAge: 9000000, httpOnly: true});
     }
-    if (users[login] !== password) {
+    if (users[login].password !== password) {
         res.send("Неверный пароль или имя пользователя");
     }
-    res.cookie(
-        "user",
-        crypto.createHash('md5').update(login+password).digest("hex"),
-        {maxAge: 9000000, httpOnly: true});
     res.redirect("/createLesson");
 });
 
 app.get("/createLesson", (req, res) => {
-    if (req.cookies.user) {
-        if (Object.entries(users).length !== 0) {
-            res.render("html/createLesson.hbs", {
-                layout: "default"
-            });
-            return;
-        }
+    if (userIsAuthorized(req)) {
+        res.render("html/createLesson.hbs", {
+            layout: "default"
+        });
+        return;
     }
     res.redirect("/");
 });
 
 app.post("/createLesson", upload.none(), (req, res) => {
     const result = req.body;
+    const lessonName = result.lesson;
     //todo
 });
 
@@ -104,6 +105,20 @@ const students = [
     },
 
 ];
+
+function userIsAuthorized(req) {
+    const hash = req.cookies.user;
+    return hash && userWithHashExists(hash);
+}
+
+function userWithHashExists(hash)
+{
+    for (const user of Object.values(users)) {
+        if (user.hash === hash)
+            return true;
+    }
+    return false;
+}
 
 app.get("/students", (_, res) => {
     res.render("html/studentsResults.hbs", {
