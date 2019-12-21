@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Results</title>
+    <script>function increasePoints(name) {
+        console.log(name+"points");
+        let pointsToAdd = document.getElementById(name+"points");
+        pointsToAdd.innerHTML = Number(pointsToAdd.innerHTML) + 1;
+    }</script>
+</head>
+<body>
+<table class="minimalistBlack">
+    <thead>
+    <tr>
+        <th>Имя</th>
+        <th>Хочет спросить</th>
+        <th>Хочет ответить</th>
+        <th>Баллы</th>
+        <th>Лайк</th>
+    </tr>
+    </thead>
+    <tbody>
+    {{#each students}}
+        <tr>
+            <td>{{name}}</td>
+            {{#if question}}
+                <td style="background-color: green">Да</td>
+            {{else}}
+                <td>Нет</td>
+            {{/if}}
+            {{#if answer}}
+                <td style="background-color: green">Да</td>
+            {{else}}
+                <td>Нет</td>
+            {{/if}}
+            <td id="{{name}}points">{{points}}</td>
+            <td>
+                <input class="likeButton" type="button" value="Like" onclick="increasePoints('{{name}}')">
+            </td>
+        </tr>
+    {{/each}}
+    </tbody>
+</table>
+</body>
+</html>
