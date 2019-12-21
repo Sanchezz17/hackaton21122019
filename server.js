@@ -103,7 +103,7 @@ app.post("/userAuth/:teacherName/:lessonName", upload.none(), (req, res) => {
     const result = req.body;
     const name = result["name"];
     const surname = result["surname"];
-    const fullName = name + surname;
+    const fullName = name + " " + surname;
     const hash = crypto.createHash('md5').update(fullName).digest("hex");
     if (!Object.keys(users).includes(fullName)) {
         users[fullName] = {
