@@ -143,6 +143,7 @@ app.get("/userAuth?:link", (req, res) => {
 const users = {};
 
 app.post("/userAuth?:link", upload.none(), (req, res) => {
+    const link = req.params.link;
     const result = req.body;
     const name = result["name"];
     const surname = result["surname"];
