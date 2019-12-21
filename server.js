@@ -41,6 +41,13 @@ app.get("/", (req, res) => {
     });
 });
 
+app.get("/logout", (req, res) => {
+   res.status(200).clearCookie('user', {
+       path: "/"
+   });
+   res.redirect("/");
+});
+
 app.post("/", upload.none(), (req, res) => {
     const result = req.body;
     const login = result["login"];
@@ -78,6 +85,7 @@ app.post("/createLesson", upload.none(), (req, res) => {
     //todo
 });
 
+
 const students = [
     {
         name: "student1",
@@ -106,6 +114,15 @@ const students = [
 
 ];
 
+app.get("/students", (_, res) => {
+    res.render("html/studentsResults.hbs", {
+        layout: "default",
+        students: students
+    });
+});
+
+app.listen(port, () => console.log(`App listening on port ${port}`));
+
 function userIsAuthorized(req) {
     const hash = req.cookies.user;
     return hash && userWithHashExists(hash);
@@ -119,12 +136,3 @@ function userWithHashExists(hash)
     }
     return false;
 }
-
-app.get("/students", (_, res) => {
-    res.render("html/studentsResults.hbs", {
-        layout: "default",
-        students: students
-    });
-});
-
-app.listen(port, () => console.log(`App listening on port ${port}`));
