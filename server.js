@@ -29,10 +29,10 @@ app.engine(
     })
 );
 
-const users = {};
+const teachers = {};
 
 app.get("/", (req, res) => {
-    if (userIsAuthorized(req)) {
+    if (teacherIsAuthorized(req)) {
         res.redirect("/createLesson");
         return;
     }
@@ -42,7 +42,7 @@ app.get("/", (req, res) => {
 });
 
 app.get("/logout", (req, res) => {
-   res.status(200).clearCookie('user', {
+   res.status(200).clearCookie('teacher', {
        path: "/"
    });
    res.redirect("/");
@@ -53,24 +53,25 @@ app.post("/", upload.none(), (req, res) => {
     const login = result["login"];
     const password = result["password"];
     const hash = crypto.createHash('md5').update(login+password).digest("hex")
-    if (!Object.keys(users).includes(login)) {
-        users[login] = {
+    if (!Object.keys(teachers).includes(login)) {
+        teachers[login] = {
             password,
-            hash
+            hash,
+            lessons: {}
         };
         res.cookie(
-            "user",
+            "teacher",
             hash,
             {maxAge: 9000000, httpOnly: true});
     }
-    if (users[login].password !== password) {
+    if (teachers[login].password !== password) {
         res.send("Неверный пароль или имя пользователя");
     }
     res.redirect("/createLesson");
 });
 
 app.get("/createLesson", (req, res) => {
-    if (userIsAuthorized(req)) {
+    if (teacherIsAuthorized(req)) {
         res.render("html/createLesson.hbs", {
             layout: "default"
         });
@@ -82,9 +83,11 @@ app.get("/createLesson", (req, res) => {
 app.post("/createLesson", upload.none(), (req, res) => {
     const result = req.body;
     const lessonName = result.lesson;
-    //todo
+    const teacherLogin = getTeacherByHash(req);
+    const link = req.protocol + "://" + req.get('host') + `/${teacherLogin}/${lessonName}`;
+    teachers[teacherLogin].lessons[lessonName] = { students: [], link };
+    res.redirect(link);
 });
-
 
 const students = [
     {
@@ -114,25 +117,42 @@ const students = [
 
 ];
 
-app.get("/students", (_, res) => {
-    res.render("html/studentsResults.hbs", {
-        layout: "default",
-        students: students
-    });
+app.get("/:teacherLogin/:lessonName", (req, res) => {
+    const teacherLogin = req.params.teacherLogin;
+    const lessonName = req.params.lessonName;
+    if (teacherIsAuthorized(req)) {
+        res.render("html/studentsResults.hbs", {
+            layout: "default",
+            students: teachers[teacherLogin].lessons[lessonName].students,
+            link: teachers[teacherLogin].lessons[lessonName].link,
+            lessonName
+        });
+    } else {
+
+    }
 });
 
 app.listen(port, () => console.log(`App listening on port ${port}`));
 
-function userIsAuthorized(req) {
-    const hash = req.cookies.user;
-    return hash && userWithHashExists(hash);
+function teacherIsAuthorized(req) {
+    const hash = req.cookies.teacher;
+    return hash && teacherWithHashExists(hash);
 }
 
-function userWithHashExists(hash)
+function teacherWithHashExists(hash)
 {
-    for (const user of Object.values(users)) {
-        if (user.hash === hash)
+    for (const teacher of Object.values(teachers)) {
+        if (teacher.hash === hash)
             return true;
+    }
+    return false;
+}
+
+function getTeacherByHash(req) {
+    const hash = req.cookies.teacher;
+    for (const [login, teacher] of Object.entries(teachers)) {
+        if (teacher.hash === hash)
+            return login;
     }
     return false;
 }
