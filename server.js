@@ -35,12 +35,12 @@ app.get("/", (req, res) => {
     if (req.cookies.user) {
         if (Object.entries(users).length !== 0) {
             res.redirect("/createLesson");
-        } else {
-            res.render("html/index.hbs", {
-                layout: "default"
-            });
+            return;
         }
     }
+    res.render("html/index.hbs", {
+        layout: "default"
+    });
 });
 
 app.post("/", upload.none(), (req, res) => {
@@ -60,28 +60,21 @@ app.post("/", upload.none(), (req, res) => {
     res.redirect("/createLesson");
 });
 
-app.get("/createLesson", (_, res) => {
-    res.render("html/createLesson.hbs", {
-        layout: "default"
-    });
-});
-
-app.post("/", upload.none(), (req, res) => {
-    let result = req.body;
-    console.log(result);
-    let currentScore = 0;
-    for (const question of questions) {
-        if (result[question.index]) {
-            if (result[question.index] === question.answer) {
-                currentScore++;
-            }
-        } else {
-            console.log(`have no answer for question ${question.name}`)
+app.get("/createLesson", (req, res) => {
+    if (req.cookies.user) {
+        if (Object.entries(users).length !== 0) {
+            res.render("html/createLesson.hbs", {
+                layout: "default"
+            });
+            return;
         }
     }
-    console.log(currentScore);
-    score = currentScore;
-    res.redirect('/');
+    res.redirect("/");
+});
+
+app.post("/createLesson", upload.none(), (req, res) => {
+    const result = req.body;
+    //todo
 });
 
 const students = [

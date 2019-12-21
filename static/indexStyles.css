@@ -1,4 +1,4 @@
-.content
+.index-content
 {
     display: flex;
     justify-content: center;
@@ -14,7 +14,7 @@
     padding-top: 20px;
 }
 
-.btn,
+.index__button,
 .auth-form__label > input
 {
     width: 100%;
@@ -26,12 +26,12 @@
     width: 300px;
 }
 
-.btn
+.index__button
 {
     margin-bottom: 5px;
 }
 
-.btn.fail-auth
+.index__button.fail-auth
 {
     display: none;
 }
