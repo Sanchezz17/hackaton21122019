@@ -84,7 +84,7 @@ app.post("/createLesson", upload.none(), (req, res) => {
     const result = req.body;
     const lessonName = result.lesson;
     const teacherLogin = getTeacherByHash(req);
-    const link = req.protocol + "://" + req.get('host') + `/${teacherLogin}/${lessonName}`;
+    const link = req.protocol + "://" + req.get('host') + `/auth/${teacherLogin}/${lessonName}`;
     teachers[teacherLogin].lessons[lessonName] = { students: [], link };
     res.redirect(link);
 });
@@ -117,7 +117,42 @@ const students = [
 
 ];
 
-app.get("/:teacherLogin/:lessonName", (req, res) => {
+app.get("/userAuth/:lessonName/:teacherName", (req, res) => {
+    const link = req.params.link;
+    res.render("html/userAuth.hbs", {
+        layout: "default"
+    });
+});
+
+const users = {};
+
+app.post("/userAuth/:lessonName/:teacherName", upload.none(), (req, res) => {
+    const lessonName = req.params.lessonName;
+    const teacherName = req.params.teacherName;
+    const result = req.body;
+    const name = result["name"];
+    const surname = result["surname"];
+    const fullName = name + surname;
+    const hash = crypto.createHash('md5').update(fullName).digest("hex");
+    if (!Object.keys(users).includes(fullName)) {
+        users[fullName] = {
+            hash
+        };
+        res.cookie(
+            "user",
+            hash,
+            {maxAge: 9000000, httpOnly: true});
+    }
+    teachers[teacherName].lessons[lessonName].students.push({
+        name: fullName,
+        question: false,
+        answer: false,
+        points: 0
+    });
+    res.redirect(`/${teacherName}/${lessonName}/${fullName}`);
+});
+
+app.get("/auth/:teacherLogin/:lessonName", (req, res) => {
     const teacherLogin = req.params.teacherLogin;
     const lessonName = req.params.lessonName;
     const link = teachers[teacherLogin].lessons[lessonName].link;
@@ -129,46 +164,34 @@ app.get("/:teacherLogin/:lessonName", (req, res) => {
             lessonName
         });
     } else {
-        res.redirect(`/userAuth?${link}`);
+        res.redirect(`/userAuth/${teacherLogin}/${lessonName}`);
     }
 });
 
-app.get("/:teacherLogin/:lessonName?:fullName", (req, res) => {
-    const teacherLogin = req.params.teacherLogin;
+app.get("/:teacherLogin/:lessonName/:fullName", (req, res) => {
+    const teacherName = req.params.teacherLogin;
     const lessonName = req.params.lessonName;
     const fullName = req.params.fullName;
     res.render("html/student.hbs", {
         layout: "default",
-        fullName
+        fullName,
+        teacherName,
+        lessonName
     });
 });
 
-app.get("/userAuth?:link", (req, res) => {
-    const link = req.params.link;
-    res.render("html/userAuth.hbs", {
-        layout: "default"
-    });
+app.get("/api/answer/:teacherName/:lessonName/:fullName", (req, res) => {
+    const teacherName = req.params.teacherName;
+    const lessonName = req.params.lessonName;
+    const fullName = req.params.fullName;
+    teachers[teacherName].lessons[lessonName].students.find(s => s.name === fullName).answer = true;
 });
 
-const users = {};
-
-app.post("/userAuth?:link", upload.none(), (req, res) => {
-    const link = req.params.link;
-    const result = req.body;
-    const name = result["name"];
-    const surname = result["surname"];
-    const fullName = name + " " + surname;
-    const hash = crypto.createHash('md5').update(fullName).digest("hex");
-    if (!Object.keys(users).includes(fullName)) {
-        users[fullName] = {
-            hash
-        };
-        res.cookie(
-            "user",
-            hash,
-            {maxAge: 9000000, httpOnly: true});
-    }
-    res.redirect(link + `?${fullName}`)
+app.get("/api/question/:teacherName/:lessonName/:fullName", (req, res) => {
+    const teacherName = req.params.teacherName;
+    const lessonName = req.params.lessonName;
+    const fullName = req.params.fullName;
+    teachers[teacherName].lessons[lessonName].students.find(s => s.name === fullName).question = true;
 });
 
 app.listen(port, () => console.log(`App listening on port ${port}`));
