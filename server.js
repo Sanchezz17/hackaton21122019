@@ -186,6 +186,7 @@ app.get("/api/answer/:teacherName/:lessonName/:fullName", (req, res) => {
     const lessonName = req.params.lessonName;
     const fullName = req.params.fullName;
     teachers[teacherName].lessons[lessonName].students.find(s => s.name === fullName).answer = true;
+    res.redirect(req.get('referer'));
 });
 
 app.get("/api/question/:teacherName/:lessonName/:fullName", (req, res) => {
@@ -193,6 +194,7 @@ app.get("/api/question/:teacherName/:lessonName/:fullName", (req, res) => {
     const lessonName = req.params.lessonName;
     const fullName = req.params.fullName;
     teachers[teacherName].lessons[lessonName].students.find(s => s.name === fullName).question = true;
+    res.redirect(req.get('referer'));
 });
 
 app.get("/api/add/:teacherName/:lessonName/:fullName", (req, res) => {
@@ -200,6 +202,7 @@ app.get("/api/add/:teacherName/:lessonName/:fullName", (req, res) => {
     const lessonName = req.params.lessonName;
     const fullName = req.params.fullName;
     teachers[teacherName].lessons[lessonName].students.find(s => s.name === fullName).points++;
+    res.redirect(req.get('referer'));
 });
 
 app.listen(port, () => console.log(`App listening on port ${port}`));

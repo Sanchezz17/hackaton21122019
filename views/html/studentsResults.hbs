@@ -19,7 +19,7 @@
         }
 
         async function increasePoints(fullName, teacherName, lessonName) {
-            let pointsToAdd = document.getElementById(name+"points");
+            let pointsToAdd = document.getElementById(fullName+"points");
             pointsToAdd.innerHTML = Number(pointsToAdd.innerHTML) + 1;
             await fetch(`/api/add/${teacherName}/${lessonName}/${fullName}`);
         }
