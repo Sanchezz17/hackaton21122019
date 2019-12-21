@@ -89,34 +89,6 @@ app.post("/createLesson", upload.none(), (req, res) => {
     res.redirect(link);
 });
 
-// const students = [
-//     {
-//         name: "student1",
-//         question: true,
-//         answer: true,
-//         points: 0
-//     },
-//     {
-//         name: "student2",
-//         question: false,
-//         answer: false,
-//         points: 0
-//     },
-//     {
-//         name: "student3",
-//         question: true,
-//         answer: false,
-//         points: 0
-//     },
-//     {
-//         name: "student4",
-//         question: false,
-//         answer: true,
-//         points: 0
-//     },
-//
-// ];
-
 app.get("/userAuth/:lessonName/:teacherName", (req, res) => {
     const link = req.params.link;
     res.render("html/userAuth.hbs", {
