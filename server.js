@@ -89,7 +89,7 @@ app.post("/createLesson", upload.none(), (req, res) => {
     res.redirect(link);
 });
 
-app.get("/userAuth/:lessonName/:teacherName", (req, res) => {
+app.get("/userAuth/:teacherName/:lessonName", (req, res) => {
     const link = req.params.link;
     res.render("html/userAuth.hbs", {
         layout: "default"
@@ -98,7 +98,7 @@ app.get("/userAuth/:lessonName/:teacherName", (req, res) => {
 
 const users = {};
 
-app.post("/userAuth/:lessonName/:teacherName", upload.none(), (req, res) => {
+app.post("/userAuth/:teacherName/:lessonName", upload.none(), (req, res) => {
     const lessonName = req.params.lessonName;
     const teacherName = req.params.teacherName;
     const result = req.body;
