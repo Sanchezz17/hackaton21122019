@@ -84,6 +84,39 @@ app.post("/", upload.none(), (req, res) => {
     res.redirect('/');
 });
 
+const students = [
+    {
+        name: "student1",
+        question: true,
+        answer: true,
+        points: 0
+    },
+    {
+        name: "student2",
+        question: false,
+        answer: false,
+        points: 0
+    },
+    {
+        name: "student3",
+        question: true,
+        answer: false,
+        points: 0
+    },
+    {
+        name: "student4",
+        question: false,
+        answer: true,
+        points: 0
+    },
+
+];
+
+app.get("/students", (_, res) => {
+    res.render("html/studentsResults.hbs", {
+        layout: "default",
+        students: students
+    });
+});
+
 app.listen(port, () => console.log(`App listening on port ${port}`));
-
-
