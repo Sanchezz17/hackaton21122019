@@ -1,4 +1,8 @@
-
+.mem
+{
+    height: 480px;
+    border: 3px solid #7db0e1;
+}
 
 .top
 {
@@ -80,11 +84,4 @@
     100% {
         transform: translate(-250%, 250%) scale(1.5);
     }
-}
-
-.data
-{
-    height: 400px;
-    width: 600px;
-    border: 3px solid #7db0e1;
 }
