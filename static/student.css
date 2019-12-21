@@ -1,9 +1,17 @@
 .mem
 {
-    height: 480px;
+    height: 370px;
     border: 3px solid #7db0e1;
 }
 
+.username,
+.marks
+{
+    text-align: center;
+    text-decoration-line: underline;
+    text-decoration-color: #7db0e1;
+    font-size: 20px;
+}
 .top
 {
     height: 60%;
