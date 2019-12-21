@@ -4,18 +4,35 @@
     <meta charset="UTF-8">
     <title>Results</title>
     <script>
+
+        function download(filename, text) {
+            var element = document.createElement('a');
+            element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+            element.setAttribute('download', filename);
+
+            element.style.display = 'none';
+            document.body.appendChild(element);
+
+            element.click();
+
+            document.body.removeChild(element);
+        }
+
+
         function increasePoints(name) {
-            // console.log(name+"points");
             let pointsToAdd = document.getElementById(name+"points");
             pointsToAdd.innerHTML = Number(pointsToAdd.innerHTML) + 1;
         }
         function saveResults() {
             console.log("saved");
+            let results= "";
+
             let rows = document.getElementsByClassName("row");
             for(let row of rows){
                 console.log(row)
             }
-            saveAs("", "1.txt")
+
+            download("hello.txt","This is the content of my file :)");
         }
 
     </script>
@@ -35,7 +52,7 @@
     </thead>
     <tbody>
     {{#each students}}
-        <tr>
+        <tr class="rows">
             <td>{{name}}</td>
             {{#if question}}
                 <td style="background-color: green">Да</td>
