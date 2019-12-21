@@ -24,15 +24,19 @@
             pointsToAdd.innerHTML = Number(pointsToAdd.innerHTML) + 1;
         }
         function saveResults() {
-            console.log("saved");
+            //console.log("saved");
             let results= "";
 
-            let rows = document.getElementsByClassName("row");
+            let rows = document.getElementsByClassName("rows");
             for(let row of rows){
-                console.log(row)
+                let name = row.getElementsByClassName("name")[0].innerHTML;
+                let points = row.getElementsByClassName("points")[0].innerHTML;
+                let personResult = name + ":" + points + "\n";
+                //console.log(personResult);
+                results+=personResult;
             }
 
-            download("hello.txt","This is the content of my file :)");
+            download("lessonResult.txt",results);
         }
 
     </script>
@@ -53,7 +57,7 @@
     <tbody>
     {{#each students}}
         <tr class="rows">
-            <td>{{name}}</td>
+            <td class="name">{{name}}</td>
             {{#if question}}
                 <td style="background-color: green">Да</td>
             {{else}}
@@ -64,7 +68,7 @@
             {{else}}
                 <td>Нет</td>
             {{/if}}
-            <td id="{{name}}points">{{points}}</td>
+            <td class="points" id="{{name}}points">{{points}}</td>
             <td>
                 <input class="likeButton" type="button" value="Like" onclick="increasePoints('{{name}}')">
             </td>
