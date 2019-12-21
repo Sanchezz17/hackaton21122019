@@ -1,16 +1,16 @@
 <div class="content">
-    <label for="login">
-        <span>Логин</span>
-        <input type="text" id="login">
-    </label>
-    <label for="password">
-        <span>Пароль</span>
-        <input type="password" id="password">
-    </label>
-    <a href="" class="register-button btn btn-primary">
-        <span>Зарегистрироваться</span>
-    </a>
-    <a href="" class="auth-button btn btn-primary">
-        <span>Войти</span>
-    </a>
+    <form action="" class="auth-form" method="post" enctype="multipart/form-data">
+        <label for="login" class="auth-form__label" >
+            <input type="text" id="login" placeholder="Логин" value="" name="login">
+        </label>
+        <label for="password" class="auth-form__label" >
+            <input type="password" id="password" placeholder="Пароль" value="" name="password">
+        </label>
+        <button type="submit" class="register-button btn btn-primary">
+            <span>Зарегистрироваться</span>
+        </button>
+        <button type="submit" class="auth-button btn btn-success">
+            <span>Войти</span>
+        </button>
+    </form>
 </div>

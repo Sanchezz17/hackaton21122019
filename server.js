@@ -40,10 +40,11 @@ app.get("/authTeacher", (_, res) => {
    });
 });
 
-app.post("/authTeacher", (req, res) => {
-   const login = req.query.login;
-   const password = req.query.password;
-   console.log(login + password);
+app.post("/", upload.none(), (req, res) => {
+    const result = req.body;
+    const login = result["login"];
+    const password = result["password"];
+    console.log(result);
 });
 
 app.post("/", upload.none(), (req, res) => {
@@ -66,11 +67,4 @@ app.post("/", upload.none(), (req, res) => {
 
 app.listen(port, () => console.log(`App listening on port ${port}`));
 
-// app.get("/json", (req, res) => {
-// //     res.json({ 'login' : 'lol', 'password' : 'kek' });
-// // });
-// //
-// // app.get('/user/:id', function (req, res, next) {
-// //     res.end(req.params.id);
-// // });
 

@@ -1,8 +1,26 @@
 .content
 {
     display: flex;
+    justify-content: center;
+}
+
+.auth-form
+{
+    width: 200px;
+    display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     padding-top: 20px;
+}
+
+.btn,
+.auth-form__label > input
+{
+    width: 100%;
+}
+
+.btn
+{
+    margin-bottom: 5px;
 }
