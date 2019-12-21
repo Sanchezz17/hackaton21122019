@@ -56,7 +56,8 @@ app.post("/", upload.none(), (req, res) => {
     if (!Object.keys(users).includes(login)) {
         users[login] = {
             password,
-            hash
+            hash,
+            lessons: {}
         };
         res.cookie(
             "user",
@@ -82,9 +83,11 @@ app.get("/createLesson", (req, res) => {
 app.post("/createLesson", upload.none(), (req, res) => {
     const result = req.body;
     const lessonName = result.lesson;
-    //todo
+    const teacherLogin = getTeacherByHash(req);
+    const link = req.protocol + "://" + req.get('host') + `/${teacherLogin}/${lessonName}`;
+    users[teacherLogin].lessons[lessonName] = { students: [], link };
+    res.redirect(link);
 });
-
 
 const students = [
     {
@@ -114,11 +117,16 @@ const students = [
 
 ];
 
-app.get("/students", (_, res) => {
-    res.render("html/studentsResults.hbs", {
-        layout: "default",
-        students: students
-    });
+app.get("/:teacherLogin/:lessonName", (req, res) => {
+    const teacherLogin = req.params.teacherLogin;
+    const lessonName = req.params.lessonName;
+    if (userIsAuthorized(req)) {
+        res.render("html/studentsResults.hbs", {
+            layout: "default",
+            students: users[teacherLogin].lessons[lessonName].students,
+            link: users[teacherLogin].lessons[lessonName].link
+        });
+    }
 });
 
 app.listen(port, () => console.log(`App listening on port ${port}`));
@@ -133,6 +141,15 @@ function userWithHashExists(hash)
     for (const user of Object.values(users)) {
         if (user.hash === hash)
             return true;
+    }
+    return false;
+}
+
+function getTeacherByHash(req) {
+    const hash = req.cookies.user;
+    for (const [login, user] of Object.entries(users)) {
+        if (user.hash === hash)
+            return login;
     }
     return false;
 }
