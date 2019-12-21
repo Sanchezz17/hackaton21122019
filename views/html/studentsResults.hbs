@@ -18,10 +18,10 @@
             document.body.removeChild(element);
         }
 
-
-        function increasePoints(name) {
+        async function increasePoints(fullName, teacherName, lessonName) {
             let pointsToAdd = document.getElementById(name+"points");
             pointsToAdd.innerHTML = Number(pointsToAdd.innerHTML) + 1;
+            await fetch(`/api/add/${teacherName}/${lessonName}/${fullName}`);
         }
         function saveResults() {
             //console.log("saved");
@@ -70,7 +70,8 @@
             {{/if}}
             <td class="points" id="{{name}}points">{{points}}</td>
             <td>
-                <input class="likeButton" type="button" value="Like" onclick="increasePoints('{{name}}')">
+                <input class="likeButton" type="button" value="Like"
+                       onclick="increasePoints('{{name}}', '{{../teacherName}}', '{{../lessonName}}')">
             </td>
         </tr>
     {{/each}}

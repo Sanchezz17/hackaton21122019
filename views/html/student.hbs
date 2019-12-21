@@ -13,11 +13,11 @@
     </script>
     <form action="/" method="POST">
         <div class="top">
-            <img src="Ahaha.jpg" alt="Мем: табличка 'Хочу ответить'" class="mem">
+            <img src="/Ahaha.jpg" alt="Мем: табличка 'Хочу ответить'" class="mem">
         </div>
         <div class="buttons">
-            <button type="button" class="btn btn-success reply" onclick="submit({{fullName}}, {{teacherName}}, {{lessonName}}, true)"></button>
-            <button type="button" class="btn btn-info ask" onclick="submit({{fullName}}, {{teacherName}}, {{lessonName}}, false)"></button>
+            <button type="button" class="btn btn-success reply" onclick="submit('{{fullName}}', '{{teacherName}}', '{{lessonName}}', true)"></button>
+            <button type="button" class="btn btn-info ask" onclick="submit('{{fullName}}', '{{teacherName}}', '{{lessonName}}', false)"></button>
         </div>
     </form>
 </div>

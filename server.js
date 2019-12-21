@@ -89,33 +89,33 @@ app.post("/createLesson", upload.none(), (req, res) => {
     res.redirect(link);
 });
 
-const students = [
-    {
-        name: "student1",
-        question: true,
-        answer: true,
-        points: 0
-    },
-    {
-        name: "student2",
-        question: false,
-        answer: false,
-        points: 0
-    },
-    {
-        name: "student3",
-        question: true,
-        answer: false,
-        points: 0
-    },
-    {
-        name: "student4",
-        question: false,
-        answer: true,
-        points: 0
-    },
-
-];
+// const students = [
+//     {
+//         name: "student1",
+//         question: true,
+//         answer: true,
+//         points: 0
+//     },
+//     {
+//         name: "student2",
+//         question: false,
+//         answer: false,
+//         points: 0
+//     },
+//     {
+//         name: "student3",
+//         question: true,
+//         answer: false,
+//         points: 0
+//     },
+//     {
+//         name: "student4",
+//         question: false,
+//         answer: true,
+//         points: 0
+//     },
+//
+// ];
 
 app.get("/userAuth/:lessonName/:teacherName", (req, res) => {
     const link = req.params.link;
@@ -152,19 +152,20 @@ app.post("/userAuth/:lessonName/:teacherName", upload.none(), (req, res) => {
     res.redirect(`/${teacherName}/${lessonName}/${fullName}`);
 });
 
-app.get("/auth/:teacherLogin/:lessonName", (req, res) => {
-    const teacherLogin = req.params.teacherLogin;
+app.get("/auth/:teacherName/:lessonName", (req, res) => {
+    const teacherName = req.params.teacherName;
     const lessonName = req.params.lessonName;
-    const link = teachers[teacherLogin].lessons[lessonName].link;
+    const link = teachers[teacherName].lessons[lessonName].link;
     if (teacherIsAuthorized(req)) {
         res.render("html/studentsResults.hbs", {
             layout: "default",
-            students: teachers[teacherLogin].lessons[lessonName].students,
+            students: teachers[teacherName].lessons[lessonName].students,
             link,
-            lessonName
+            lessonName,
+            teacherName
         });
     } else {
-        res.redirect(`/userAuth/${teacherLogin}/${lessonName}`);
+        res.redirect(`/userAuth/${teacherName}/${lessonName}`);
     }
 });
 
@@ -192,6 +193,13 @@ app.get("/api/question/:teacherName/:lessonName/:fullName", (req, res) => {
     const lessonName = req.params.lessonName;
     const fullName = req.params.fullName;
     teachers[teacherName].lessons[lessonName].students.find(s => s.name === fullName).question = true;
+});
+
+app.get("/api/add/:teacherName/:lessonName/:fullName", (req, res) => {
+    const teacherName = req.params.teacherName;
+    const lessonName = req.params.lessonName;
+    const fullName = req.params.fullName;
+    teachers[teacherName].lessons[lessonName].students.find(s => s.name === fullName).points++;
 });
 
 app.listen(port, () => console.log(`App listening on port ${port}`));
