@@ -3,13 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <title>Results</title>
-    <script>function increasePoints(name) {
-        console.log(name+"points");
-        let pointsToAdd = document.getElementById(name+"points");
-        pointsToAdd.innerHTML = Number(pointsToAdd.innerHTML) + 1;
-    }</script>
+    <script>
+        function increasePoints(name) {
+            // console.log(name+"points");
+            let pointsToAdd = document.getElementById(name+"points");
+            pointsToAdd.innerHTML = Number(pointsToAdd.innerHTML) + 1;
+        }
+        function saveResults() {
+            console.log("saved");
+            let rows = document.getElementsByClassName("row");
+            for(let row of rows){
+                console.log(row)
+            }
+            saveAs("", "1.txt")
+        }
+
+    </script>
 </head>
 <body>
+<H1>Занятие: {{lessonName}}</H1>
+<div><a href="{{link}}">Ссылка для студентов</a></div>
 <table class="minimalistBlack">
     <thead>
     <tr>
@@ -42,5 +55,6 @@
     {{/each}}
     </tbody>
 </table>
+<input class="saveButton" type="button" value="Сохранить результаты" onclick="saveResults()">
 </body>
 </html>
