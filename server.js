@@ -117,16 +117,6 @@ const students = [
 
 ];
 
-app.get("/:teacherLogin/:lessonName?:fullName", (req, res) => {
-    const teacherLogin = req.params.teacherLogin;
-    const lessonName = req.params.lessonName;
-    const fullName = req.params.fullName;
-    res.render("html/student.hbs", {
-        layout: "default",
-        fullName
-    });
-});
-
 app.get("/:teacherLogin/:lessonName", (req, res) => {
     const teacherLogin = req.params.teacherLogin;
     const lessonName = req.params.lessonName;
@@ -141,6 +131,16 @@ app.get("/:teacherLogin/:lessonName", (req, res) => {
     } else {
         res.redirect(`/userAuth?${link}`);
     }
+});
+
+app.get("/:teacherLogin/:lessonName?:fullName", (req, res) => {
+    const teacherLogin = req.params.teacherLogin;
+    const lessonName = req.params.lessonName;
+    const fullName = req.params.fullName;
+    res.render("html/student.hbs", {
+        layout: "default",
+        fullName
+    });
 });
 
 app.get("/userAuth?:link", (req, res) => {
